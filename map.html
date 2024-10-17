@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaflet with Routing - Cosmic Theme</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            background: linear-gradient(135deg, #1e0030, #320046, #500076);
+            overflow: hidden;
+        }
+
+        #map {
+            width: 100%;
+            height: 500px;
+            border: 8px solid #7E60BF;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px #450057, 0px 0px 25px #500076;
+        }
+
+        .route-info, .directions {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(230, 150, 250, 0.8);
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(230, 150, 250, 0.5);
+            color: #E4B1F0;
+            font-weight: bold;
+            text-shadow: 0 0 5px #7E60BF;
+            max-width: 300px;
+            z-index: 1000;
+        }
+
+        .directions {
+            top: 60px;
+        }
+
+        h1 {
+            color: #E4B1F0;
+            text-align: center;
+            text-shadow: 0px 0px 10px #500076;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #7E60BF;
+            color: #E4B1F0;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px #500076;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+            background: #E4B1F0;
+            transform: scale(1.05);
+        }
+
+        .cosmic-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 200, 250, 0.5) 0%, transparent 80%);
+            filter: blur(30px);
+            animation: cosmic-float 6s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        .cosmic-glow:nth-child(1) { top: 20%; left: 25%; animation-delay: 1s; }
+        .cosmic-glow:nth-child(2) { top: 75%; left: 60%; animation-delay: 3s; }
+        .cosmic-glow:nth-child(3) { top: 40%; left: 80%; animation-delay: 5s; }
+        .cosmic-glow:nth-child(4) { top: 60%; left: 15%; animation-delay: 2s; }
+
+        @keyframes cosmic-float {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        .leaflet-control-zoom {
+            background: #7E60BF;
+            border-radius: 5px;
+        }
+
+        .leaflet-control-zoom a {
+            color: #E4B1F0;
+            text-shadow: 0 0 5px #500076;
+        }
+    </style>
+</head>
+<body>
+    <h1>Travelling Minds</h1>
+
+    <div id="map"></div>
+    <div class="route-info" id="route-info" style="display: none;"></div>
+    <div class="directions" id="directions" style="display: none;"></div>
+
+    <!-- Cosmic glow effects -->
+    <div class="cosmic-glow"></div>
+    <div class="cosmic-glow"></div>
+    <div class="cosmic-glow"></div>
+    <div class="cosmic-glow"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script>
+        var map = L.map('map').setView([20.5937, 78.9629], 5); // Centered on India
+
+        var googleLayer = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+            attribution: 'Map data &copy; <a href="https://www.google.com/intl/en_us/help/terms_maps.html">Google</a>',
+        }).addTo(map);
+
+        var userMarker, routingControl;
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async function(position) {
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+
+                    map.setView([lat, lon], 15);
+
+                    userMarker = L.marker([lat, lon]).addTo(map).bindPopup('You are here!').openPopup();
+
+                    try {
+                        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+                        const data = await response.json();
+                        const locationName = data.display_name || "Unknown location";
+                        console.log('Location Name:', locationName);
+                        sessionStorage.setItem('currentLocationName', locationName);
+                        sessionStorage.setItem('currentLatitude', lat);
+                        sessionStorage.setItem('currentLongitude', lon);
+                    } catch (error) {
+                        console.error('Error occurred while fetching location name:', error);
+                        alert('Unable to retrieve location name.');
+                    }
+                }, function(error) {
+                    console.error('Error occurred while retrieving location:', error);
+                    alert('Unable to retrieve your location. Please ensure location services are enabled.');
+                });
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
+        }
+
+        function showRoute(destination) {
+            if (userMarker) {
+                var userLocation = userMarker.getLatLng();
+
+                if (routingControl) {
+                    map.removeControl(routingControl);
+                    document.getElementById('directions').style.display = 'none';
+                }
+
+                routingControl = L.Routing.control({
+                    waypoints: [
+                        L.latLng(userLocation.lat, userLocation.lng),
+                        L.latLng(destination.lat, destination.lng)
+                    ],
+                    routeWhileDragging: true,
+                    createMarker: function() { return null; },
+                    onRoutesChanged: function(e) {
+                        var routes = e.routes;
+                        var distance = routes[0].summary.totalDistance / 1000;
+                        var duration = routes[0].summary.totalTime / 60;
+                        var instructions = routes[0].instructions;
+
+                        var distanceText = `Distance: ${distance.toFixed(2)} km, Duration: ${duration.toFixed(0)} min`;
+                        document.getElementById('route-info').innerHTML = distanceText;
+                        document.getElementById('route-info').style.display = 'block';
+
+                        var directionsText = instructions.map(inst => inst.text).join('<br>');
+                        document.getElementById('directions').innerHTML = directionsText;
+                        document.getElementById('directions').style.display = 'block';
+                    }
+                }).addTo(map);
+            }
+        }
+
+        map.on('click', function(e) {
+            var destinationLatLng = e.latlng;
+            showRoute(destinationLatLng);
+        });
+
+        window.onload = getLocation;
+    </script>
+</body>
+</html>
