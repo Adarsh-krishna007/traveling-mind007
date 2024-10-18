@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="speak()">Speak</button>
+    <script>
+        function listVoices() {
+            const voices = window.speechSynthesis.getVoices();
+            console.log(voices);
+            voices.forEach((voice, index) => {
+                console.log(`${index}: ${voice.name} (${voice.lang}) ${voice.default ? '- Default' : ''}`);
+            });
+        }
+
+        function speak() {
+            const message = new SpeechSynthesisUtterance("Hello, this is an example using a male voice.");
+            const voices = window.speechSynthesis.getVoices();
+            // Find a voice with the name 'Microsoft Ravi' or any male voice available.
+            const selectedVoice = voices.find(voice => voice.name === 'Microsoft Ravi - English (India)');
+            if (selectedVoice) {
+                message.voice = selectedVoice;
+                console.log(`Using voice: ${selectedVoice.name}`);
+            } else {
+                console.warn("No male voice found, using default.");
+            }
+            window.speechSynthesis.speak(message);
+        }
+
+        window.speechSynthesis.onvoiceschanged = listVoices;
+        // Call listVoices to show the available voices in the console when the page loads.
+        listVoices();
+    </script>
+</body>
+</html>
