@@ -3,178 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="prefetch" href="chat.html">
-    <link rel="prefetch" href="map.html">
-    <link rel="prefetch" href="scanner.html">
-    <link rel="prefetch" href="setting.html">
     <title>Travelling Minds</title>
     <style>
-        @keyframes twinkle {
-            0% { opacity: 0.8; }
-            50% { opacity: 1; }
-            100% { opacity: 0.8; }
-        }
-    
-        @keyframes pulseGlow {
-            0% { box-shadow: 0px 0px 15px #7F5DAF; }
-            50% { box-shadow: 0px 0px 30px #A17BCC; }
-            100% { box-shadow: 0px 0px 15px #7F5DAF; }
-        }
-    
-        @keyframes float {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0); }
-        }
-    
+        /* Keyframe animations */
+        @keyframes twinkle { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
+        @keyframes pulseGlow { 0% { box-shadow: 0 0 15px #7F5DAF; } 50% { box-shadow: 0 0 30px #A17BCC; } 100% { box-shadow: 0 0 15px #7F5DAF; } }
+        @keyframes float { 0% { transform: translateY(0); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0); } }
+
+        /* Body styles */
         body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: radial-gradient(circle at top, #2B1D47, #0A0028);
-            font-family: 'Orbitron', sans-serif;
-            color: #E0DFFC;
-            overflow: hidden; /* Hide overflow to prevent scrolling */
-            zoom:0.9;
+            margin: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background: radial-gradient(circle at top, #2B1D47, #0A0028); font-family: 'Orbitron', sans-serif; color: #E0DFFC;
+            overflow: hidden; zoom: 0.9; /* Hide overflow to prevent scrolling */
         }
-    
+
+        /* Header styles */
         h1 {
-            color: #E0DFFC;
-            margin-bottom: 20px;
-            text-shadow: 0px 0px 10px #7F5DAF, 0px 0px 20px #7F5DAF;
-            animation: pulseGlow 3s infinite; /* Glow effect */
+            margin-bottom: 20px; text-shadow: 0 0 10px #7F5DAF, 0 0 20px #7F5DAF; animation: pulseGlow 3s infinite; /* Glow effect */
         }
-    
+
+        /* Image styles */
         img {
-            max-width: 100%;
-            height: 70%;
-            margin-bottom: 20px;
-            border: 2px solid #7F5DAF;
-            box-shadow: 0px 0px 15px #7F5DAF;
-            animation: float 4s ease-in-out infinite; /* Floating animation */
+            max-width: 100%; height: auto; /* Set height to auto for responsive design */
+            margin-bottom: 20px; border: 2px solid #7F5DAF; box-shadow: 0 0 15px #7F5DAF; animation: float 4s ease-in-out infinite;
         }
-    
+
+        /* Button styles */
         button {
-            padding: 10px 20px;
-            background-color: #5B3F87;
-            color: #E0DFFC;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s, box-shadow 0.3s;
-            box-shadow: 0px 0px 15px #7F5DAF;
-            animation: pulseGlow 2.5s infinite; /* Glow pulsing animation */
+            padding: 10px 20px; background-color: #5B3F87; color: #E0DFFC; border: none; border-radius: 10px; cursor: pointer;
+            font-size: 16px; transition: background-color 0.3s, box-shadow 0.3s; box-shadow: 0 0 15px #7F5DAF; animation: pulseGlow 2.5s infinite;
         }
-    
+
         button:hover {
-            background-color: #7F5DAF;
-            box-shadow: 0px 0px 20px #A17BCC, 0px 0px 30px #A17BCC;
+            background-color: #7F5DAF; box-shadow: 0 0 20px #A17BCC, 0 0 30px #A17BCC;
         }
-    
+
+        /* Navigation styles */
         #nav {
-            display: none; /* Ensure navbar is displayed as flex */
-            justify-content: space-around; /* Space out the links */
-            position: fixed; /* Keep it fixed at the top */
-            top: 0; /* Align to the top */
-            width: 100%; /* Full width */
-            padding: 10px; /* Add padding for spacing */
-            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
-            z-index: 10; /* Ensure it sits above other content */
-            opacity: 1; /* Start visible */
-            transition: opacity 0.5s ease; /* Fade in/out */
+            display: none; /* Hidden initially */
+            justify-content: space-around; position: fixed; top: 0; width: 100%; padding: 10px; background-color: rgba(0, 0, 0, 0.8);
+            z-index: 10; opacity: 1; transition: opacity 0.5s ease; /* Fade in/out */
         }
 
         #nav a {
-            color: #CB80AB; /* Link color */
-            text-decoration: none; /* Remove underline */
-            font-size: 1.5em; /* Increase font size */
-            position: relative; /* Create a positioning context for pseudo-elements */
-            overflow: hidden; /* Hide overflow for the effect */
+            color: #CB80AB; text-decoration: none; font-size: 1.5em; position: relative; overflow: hidden; /* Hide overflow */
         }
 
-        #nav a::before {
-            content: ''; /* Pseudo-element for cosmic effect */
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 300%; /* Large enough to cover link */
-            height: 300%; /* Large enough to cover link */
-            background: rgba(255, 255, 255, 0.2); /* Slightly transparent */
-            border-radius: 50%; /* Circular effect */
-            transform: translate(-50%, -50%) scale(0); /* Start hidden and centered */
-            transition: transform 0.5s ease; /* Smooth transition */
-            z-index: -1; /* Behind the text */
-        }
-
+        /* Link hover effect */
         #nav a:hover::before {
-            transform: translate(-50%, -50%) scale(1); /* Scale effect on hover */
+            transform: translate(-50%, -50%) scale(1);
         }
 
-        #nav a:hover {
-            color: #E6D9A2; /* Change link color on hover */
-        }
-
+        /* Content styles */
         #content {
-            margin-top: 60px; /* Space for the navbar */
-        }
-    
-        #content {
-            width: 100%;
-            height: calc(100vh - 50px);
-            display: none; /* Change to block to avoid being hidden initially */
-            opacity: 1; /* Ensure it's visible initially */
-            transition: opacity 0.5s ease; /* Transition effect for fade */
+            margin-top: 60px; width: 100%; height: calc(100vh - 50px); display: none; opacity: 1; transition: opacity 0.5s ease;
         }
 
-    
+        /* Iframe styles */
         iframe {
-            width: 100%;
-            height: 100%;
-            border: 2px solid #7F5DAF;
+            width: 100%; height: 100%; border: 2px solid #7F5DAF;
         }
-    
+
+        /* Audio element hidden */
         audio {
             display: none;
         }
-    
+
+        /* Confirmation section styles */
         #confirm-section {
-            display: none;
-            text-align: center;
+            display: none; text-align: center;
         }
-    
-        #confirm-section p {
-            color: #E0DFFC;
-            margin-bottom: 20px;
-            text-shadow: 0px 0px 10px #7F5DAF;
-            animation: pulseGlow 3s infinite;
-        }
-    
+
         /* Starry background animation */
         .star {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: #FFFFFF;
-            border-radius: 50%;
-            animation: twinkle 2s infinite;
-            opacity: 0.8;
+            position: absolute; width: 2px; height: 2px; background: #FFFFFF; border-radius: 50%; animation: twinkle 2s infinite; opacity: 0.8;
         }
-    
-        .star:nth-child(odd) {
-            animation-duration: 3s;
-        }
-    
-        .star:nth-child(even) {
-            animation-duration: 4s;
-        }
+
+        .star:nth-child(odd) { animation-duration: 3s; }
+        .star:nth-child(even) { animation-duration: 4s; }
     </style>
-    
 </head>
 <body>
+    <!-- Star elements -->
     <div class="star" style="top: 20%; left: 15%;"></div>
     <div class="star" style="top: 50%; left: 25%;"></div>
     <div class="star" style="top: 80%; left: 45%;"></div>
@@ -183,7 +93,7 @@
     <div class="star" style="top: 70%; left: 85%;"></div>
     <div class="star" style="top: 30%; left: 90%;"></div>
     <div class="star" style="top: 60%; left: 5%;"></div>
-    
+
     <h1 id="title"><u>TRAVELLING MINDS</u></h1>
     <img id="image" src="mde.png" alt="Travelling Minds Image" />
     <button id="start-button">Start</button>
@@ -196,7 +106,7 @@
     </nav>
 
     <div id="content">
-        <iframe id="iframe" src="map.html"></iframe>
+        <iframe id="iframe" src="map.html" loading="lazy"></iframe> <!-- Lazy load iframe -->
     </div>
 
     <!-- Background audio -->
@@ -205,80 +115,79 @@
         Your browser does not support the audio element.
     </audio>
 
-<script>
-    function startApp() {
-        document.getElementById('title').style.display = 'none'; // Hide title
-        document.getElementById('image').style.display = 'none'; // Hide image
-        document.getElementById('start-button').style.display = 'none'; // Hide start button
-        document.getElementById('nav').style.display = 'flex'; // Show nav
-        document.getElementById('content').style.display = 'block'; // Show content
-    }
-    
-
-    // Event listener for start button
-    document.getElementById('start-button').onclick = function() {
-        const audio = document.getElementById('background-audio');
-        audio.src = `${sessionStorage.getItem('music')}.mp3`; // Use MP3 files
-        audio.play()
-        startApp(); // Start the app
-    };  
-
-    // Function to open the selected page
-    function openPage(page) {
-        const iframe = document.getElementById('iframe');
-        const content = document.getElementById('content');
-        const nav = document.getElementById('nav');
-
-        // Fade out the navbar and content
-        nav.style.opacity = '0';
-        content.style.opacity = '0';
-
-        setTimeout(() => {
-            iframe.src = page; // Change the iframe source
-            iframe.onload = () => {
-                nav.style.opacity = '1'; // Fade back in navbar
-                content.style.opacity = '1'; // Fade back in content
-            };
-        }, 500); // Duration of the fade out before loading the new page
-    }
-
-    window.onload = function() {
-        sessionStorage.setItem('bg','1');
-        sessionStorage.setItem('var','1');
-        sessionStorage.setItem('music','bg')
-    };
-    window.addEventListener('message', function(event) {
-        const audio = document.getElementById('background-audio');
-
-        // Handle background music on/off
-        if (event.data.type === 'updateBgMusic') {
-            const bgMusic = event.data.bg;
-            if (bgMusic === 0) {
-                audio.pause();
-                sessionStorage.setItem('bg', 0); // Store the off state
-            } else if (bgMusic === 1) {
-                audio.play();
-                sessionStorage.setItem('bg', 1); // Store the on state
-            }
+    <script>
+        function startApp() {
+            // Hide initial elements
+            document.getElementById('title').style.display = 'none';
+            document.getElementById('image').style.display = 'none';
+            document.getElementById('start-button').style.display = 'none';
+            document.getElementById('nav').style.display = 'flex';
+            document.getElementById('content').style.display = 'block';
         }
 
-        // Handle music change
-        if (event.data.type === 'updateMusic' && event.data.music) {
-            const newMusic = event.data.music;
-            const bgMusic = sessionStorage.getItem('bg');
+        // Event listener for start button
+        document.getElementById('start-button').onclick = function() {
+            const audio = document.getElementById('background-audio');
+            audio.src = `${sessionStorage.getItem('music')}.mp3`; // Use MP3 files
+            audio.play();
+            startApp();
+        };  
 
-            audio.src = `${newMusic}.mp3`;
+        // Function to open the selected page
+        function openPage(page) {
+            const iframe = document.getElementById('iframe');
+            const content = document.getElementById('content');
+            const nav = document.getElementById('nav');
 
-            // Only play if background music is set to "on"
-            if (bgMusic === '1') {
-                audio.play();
-            } else {
-                audio.pause();
-            }
+            nav.style.opacity = '0';
+            content.style.opacity = '0';
+
+            setTimeout(() => {
+                iframe.src = page; // Change the iframe source
+                iframe.onload = () => {
+                    nav.style.opacity = '1'; // Fade back in navbar
+                    content.style.opacity = '1'; // Fade back in content
+                };
+            }, 500); // Duration of the fade out before loading the new page
         }
-    });
 
-</script>
+        window.onload = function() {
+            // Set session storage items
+            sessionStorage.setItem('bg','1');
+            sessionStorage.setItem('var','1');
+            sessionStorage.setItem('music','bg');
+        };
 
+        window.addEventListener('message', function(event) {
+            const audio = document.getElementById('background-audio');
+
+            // Handle background music on/off
+            if (event.data.type === 'updateBgMusic') {
+                const bgMusic = event.data.bg;
+                if (bgMusic === 0) {
+                    audio.pause();
+                    sessionStorage.setItem('bg', 0); // Store the off state
+                } else if (bgMusic === 1) {
+                    audio.play();
+                    sessionStorage.setItem('bg', 1); // Store the on state
+                }
+            }
+
+            // Handle music change
+            if (event.data.type === 'updateMusic' && event.data.music) {
+                const newMusic = event.data.music;
+                const bgMusic = sessionStorage.getItem('bg');
+
+                audio.src = `${newMusic}.mp3`;
+
+                // Only play if background music is set to "on"
+                if (bgMusic === '1') {
+                    audio.play();
+                } else {
+                    audio.pause();
+                }
+            }
+        });
+    </script>
 </body>
 </html>
