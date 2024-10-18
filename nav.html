@@ -132,6 +132,7 @@
     <img id="image" src="mde.png" alt="Travelling Minds Image" />
     <button id="start-button">Start</button>
     <div id="loading">Loading... Please wait.</div>
+    <div id="loading-percentage" style="display: none; font-size: 24px; color: #E0DFFC;">Loading... 0%</div>
 
     <nav id="nav">
         <a href="#" onclick="openPage('chat.html')">Mascot</a>
@@ -154,17 +155,18 @@
         let iframesLoaded = 0; // Counter for loaded iframes
         const totalIframes = 4; // Total number of iframes to load
         function startApp() {
-            // Hide initial elements
-
-            
             document.getElementById('nav').style.display = 'flex';
             document.getElementById('content').style.display = 'block';
             document.getElementById('loading').style.display = 'none';
+            document.getElementById('loading-percentage').style.display = 'none'; // Hide the loading percentage
         }
 
         // Event listener for start button
         document.getElementById('start-button').onclick = function() {
             document.getElementById('loading').style.display = 'flex';
+            document.getElementById('loading-percentage').style.display = 'block'; // Show loading percentage
+            document.getElementById('loading-percentage').innerText = "Loading... 0%"; // Reset to 0%
+            
             const audio = document.getElementById('background-audio');
             audio.src = `${sessionStorage.getItem('music')}.mp3`; // Use MP3 files
             audio.play();
@@ -172,7 +174,8 @@
             document.getElementById('title').style.display = 'none';
             document.getElementById('image').style.display = 'none';
             preloadIframes();
-        };  
+        };
+
         function preloadIframes() {
             const iframeSources = ['map.html', 'chat.html', 'scanner.html', 'setting.html']; // Array of iframe sources
             for (let i = 0; i < iframeSources.length; i++) {
@@ -183,6 +186,11 @@
 
                 iframe.onload = function() {
                     iframesLoaded++;
+                    // Calculate percentage
+                    const percentage = Math.round((iframesLoaded / totalIframes) * 100);
+                    document.getElementById('loading-percentage').innerText = `Loading... ${percentage}%`;
+
+                    // Start the app when all iframes are loaded
                     if (iframesLoaded === totalIframes) {
                         startApp(); // Start the app when all iframes are loaded
                     }
