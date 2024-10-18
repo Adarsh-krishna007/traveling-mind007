@@ -82,15 +82,42 @@
         .star:nth-child(odd) { animation-duration: 3s; }
         .star:nth-child(even) { animation-duration: 4s; }
         #loading {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8);
-            display: none; justify-content: center; align-items: center; color: #E0DFFC; font-size: 24px;
-            opacity: 0; animation: fade 0.5s forwards; /* Fade in the loading overlay */
+            display: none; /* Change this to none when you want to hide it */
+            justify-content: center;
+            align-items: center;
+            width: 200px; /* Width of your loading element */
+            height: 200px; /* Height of your loading element */
+            border-radius: 25px; /* Rounded corners */
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.1) 100%);
+            position: fixed;
+            top: 50%; /* Center vertically */
+            left: 50%; /* Center horizontally */
+            transform: translate(-50%, -50%); /* Offset for centering */
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3), 0 0 40px rgba(255, 255, 255, 0.2); /* Glow effect */
+            animation: cosmicEffect 1.5s infinite ease-in-out;
+            z-index: 9999; /* Ensure it appears above other elements */
         }
+
+        @keyframes cosmicEffect {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.8;
+            }
+        }
+
 
     </style>
 </head>
 <body>
-    <div id="loading">Loading... Please wait.</div>
+    
     <!-- Star elements -->
     <div class="star" style="top: 20%; left: 15%;"></div>
     <div class="star" style="top: 50%; left: 25%;"></div>
@@ -104,6 +131,7 @@
     <h1 id="title"><u>TRAVELLING MINDS</u></h1>
     <img id="image" src="mde.png" alt="Travelling Minds Image" />
     <button id="start-button">Start</button>
+    <div id="loading">Loading... Please wait.</div>
 
     <nav id="nav">
         <a href="#" onclick="openPage('chat.html')">Mascot</a>
@@ -127,9 +155,8 @@
         const totalIframes = 4; // Total number of iframes to load
         function startApp() {
             // Hide initial elements
-            document.getElementById('title').style.display = 'none';
-            document.getElementById('image').style.display = 'none';
-            document.getElementById('start-button').style.display = 'none';
+
+            
             document.getElementById('nav').style.display = 'flex';
             document.getElementById('content').style.display = 'block';
             document.getElementById('loading').style.display = 'none';
@@ -137,10 +164,13 @@
 
         // Event listener for start button
         document.getElementById('start-button').onclick = function() {
-            document.getElementById('loading').style.display = 'block';
+            document.getElementById('loading').style.display = 'flex';
             const audio = document.getElementById('background-audio');
             audio.src = `${sessionStorage.getItem('music')}.mp3`; // Use MP3 files
             audio.play();
+            document.getElementById('start-button').style.display = 'none';
+            document.getElementById('title').style.display = 'none';
+            document.getElementById('image').style.display = 'none';
             preloadIframes();
         };  
         function preloadIframes() {
