@@ -81,9 +81,16 @@
 
         .star:nth-child(odd) { animation-duration: 3s; }
         .star:nth-child(even) { animation-duration: 4s; }
+        #loading {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8);
+            display: none; justify-content: center; align-items: center; color: #E0DFFC; font-size: 24px;
+            opacity: 0; animation: fade 0.5s forwards; /* Fade in the loading overlay */
+        }
+
     </style>
 </head>
 <body>
+    <div id="loading">Loading... Please wait.</div>
     <!-- Star elements -->
     <div class="star" style="top: 20%; left: 15%;"></div>
     <div class="star" style="top: 50%; left: 25%;"></div>
@@ -116,6 +123,8 @@
     </audio>
 
     <script>
+        let iframesLoaded = 0; // Counter for loaded iframes
+        const totalIframes = 1; // Total number of iframes to load
         function startApp() {
             // Hide initial elements
             document.getElementById('title').style.display = 'none';
@@ -123,15 +132,33 @@
             document.getElementById('start-button').style.display = 'none';
             document.getElementById('nav').style.display = 'flex';
             document.getElementById('content').style.display = 'block';
+            document.getElementById('loading').style.display = 'none';
         }
 
         // Event listener for start button
         document.getElementById('start-button').onclick = function() {
+            document.getElementById('loading').style.display = 'flex';
             const audio = document.getElementById('background-audio');
             audio.src = `${sessionStorage.getItem('music')}.mp3`; // Use MP3 files
             audio.play();
-            startApp();
+            preloadIframes();
         };  
+        function preloadIframes() {
+            const iframeSources = ['map.html', 'chat.html', 'scanner.html', 'setting.html']; // Array of iframe sources
+            for (let i = 0; i < iframeSources.length; i++) {
+                const iframe = document.createElement('iframe');
+                iframe.src = iframeSources[i];
+                iframe.style.display = 'none'; // Hide the preloaded iframe
+                document.body.appendChild(iframe); // Append to the body to load the iframe
+
+                iframe.onload = function() {
+                    iframesLoaded++;
+                    if (iframesLoaded === totalIframes) {
+                        startApp(); // Start the app when all iframes are loaded
+                    }
+                };
+            }
+        }
 
         // Function to open the selected page
         function openPage(page) {
