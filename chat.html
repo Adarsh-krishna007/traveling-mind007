@@ -97,7 +97,7 @@
             filter: drop-shadow(0 0 15px #8a2be2);
         }
     </style>
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="video-container">
@@ -127,12 +127,13 @@
 
         const sessionVar = sessionStorage.getItem('var');
         const folder = sessionVar === '1' ? '1' : '2';
+        
         var voiceType
         if (folder==="1"){
-            voiceType="Male"
+            voiceType="Hindi Male"
         }
         else{
-            voiceType="Female"
+            voiceType="Hindi Female"
         }
         console.log(folder);
         
@@ -195,7 +196,7 @@
                 mascot.style.display = 'none';
                 talkingGif.style.display = 'block';
 
-                responsiveVoice.speak(apiResponse, `UK English ${voiceType}`, {
+                responsiveVoice.speak(apiResponse, `${voiceType}`, {
                     onstart:() =>{
                        if (stopVoice=== 1){
                         console.log(stopVoice)
