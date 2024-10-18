@@ -137,7 +137,7 @@
 
         // Event listener for start button
         document.getElementById('start-button').onclick = function() {
-            document.getElementById('loading').style.display = 'flex';
+            document.getElementById('loading').style.display = 'block';
             const audio = document.getElementById('background-audio');
             audio.src = `${sessionStorage.getItem('music')}.mp3`; // Use MP3 files
             audio.play();
